@@ -1,5 +1,5 @@
 # About
-I see there are quite a few NuGet packages for Visual Studio to implement ChatGPT. The reality is that it's a lot easier than people may realize. This guide is designed to teach people how to use it using a basic "I want one response".
+I see there are quite a few NuGet packages for Visual Studio to implement ChatGPT. The reality is that it's a lot easier than people may realize. This guide is designed to teach people how to use it using a basic "I want one response". This code is used in my [OutlookGPT](https://github.com/rkrehn/OutlookGPT) plugin.
 
 # Requirements (from NuGet)
 
