@@ -11,7 +11,7 @@ I see there are quite a few NuGet packages for Visual Studio to implement ChatGP
 
 1. First add the following lines at the top of your project where declare 'using":
 
-```
+```C
 using System.Net.Http;
 using System.Net;
 using System.Text;
@@ -20,7 +20,7 @@ using Newtonsoft.Json;
 
 2. Declare your API key (insert your [OpenAI API key](https://platform.openai.com/account/api-keys) in the quotes)
 
-```
+```C
 string apiKey = "[api key]";
 ```
 
@@ -28,7 +28,7 @@ string apiKey = "[api key]";
 
 Setting the TLS to 1.2 will ensure a secure connection. The next part is calling the API from the Chat Completions. Finally, we'll create the client and add a header with your API key from above.
 
-```
+```C
 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 string requestUrl = $"https://api.openai.com/v1/chat/completions";
 HttpClient client = new HttpClient();
@@ -43,7 +43,7 @@ It's worth noting that only the "model" and the "messages" are required in the b
 
 I'm using max_tokens at 1024 to prevent a high cost. The **gpt-3.5-turbo** model can only support 4,096 tokens. I also use a [temperature](https://platform.openai.com/docs/guides/gpt/how-should-i-set-the-temperature-parameter) of 0.7, which gives a good sense of creativity, without being too consistent. Generally, temperature should be between 0.05 and 1, where 1 is very creative and 0.05 is very consistent.
 
-```
+```C
   var requestJson = new
   {
       messages = new[]
@@ -67,7 +67,7 @@ I'm using max_tokens at 1024 to prevent a high cost. The **gpt-3.5-turbo** model
 
 Next, build a **HTTP content** using the serialized **requestJson** variable that we created above:
 
-```
+```C
 StringContent content = new StringContent(JsonConvert.SerializeObject(requestJson), Encoding.UTF8, "application/json");
 ```
 
@@ -75,7 +75,7 @@ StringContent content = new StringContent(JsonConvert.SerializeObject(requestJso
 
 This next part is sending the message over to OpenAI and retrieving a JSON response.
 
-```
+```C
 // Send the request and receive the response
 HttpResponseMessage response = client.PostAsync(requestUrl, content).Result;
 string responseJson = response.Content.ReadAsStringAsync().Result;
@@ -83,14 +83,14 @@ string responseJson = response.Content.ReadAsStringAsync().Result;
 
 Then, we'll deserialize the response into a readable format.
 
-```
+```C
 // Extract the completed text from the response
 dynamic responseObject = JsonConvert.DeserializeObject(responseJson);
 ```
 
-You will receive a JSON response like this in the responseObject:
+You will receive a JSON response like this in the responseObject (don't copy this):
 
-```
+```JSON
 {
   "id": "chatcmpl-123",
   "object": "chat.completion",
@@ -118,10 +118,56 @@ You will receive a JSON response like this in the responseObject:
 
 The **completedText** string below is created from those three nodes above in the responseObject:
 
-```
+```C
 string completedText = responseObject.choices[0].message.content;
 ```
 
 **completedText** will look like:
+
+> Sure, I can recommend you check out Livin the Dream brewery in Littleton and Denver Beer Co in Englewood.
+
+# Everything together
+
+Now, put it together in all its glory:
+
+```C
+// setup variables and HTTPClient
+string apiKey = "[api key]";
+ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+string requestUrl = $"https://api.openai.com/v1/chat/completions";
+HttpClient client = new HttpClient();
+client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apikey}");
+
+// build JSON request
+  var requestJson = new
+  {
+      messages = new[]
+      {
+          new
+          {
+              role = "system",
+              content = "You are a travel agent. Please provide a detailed itinerary based on the user's input."
+          },
+          new
+          {
+              role = "user",
+              content = "I am traveling to Denver, CO for three days and I like beer."
+          }
+      },
+      max_tokens = 1024,
+      temperature = 0.7,
+      model = "gpt-3.5-turbo"
+  };
+
+StringContent content = new StringContent(JsonConvert.SerializeObject(requestJson), Encoding.UTF8, "application/json");
+
+// Send the request and receive the response
+HttpResponseMessage response = client.PostAsync(requestUrl, content).Result;
+string responseJson = response.Content.ReadAsStringAsync().Result;
+
+// Extract the completed text from the response
+dynamic responseObject = JsonConvert.DeserializeObject(responseJson);
+string completedText = responseObject.choices[0].message.content;
+```
 
 > Sure, I can recommend you check out Livin the Dream brewery in Littleton and Denver Beer Co in Englewood.
