@@ -10,10 +10,14 @@ I see there are quite a few NuGet packages for Visual Studio to implement ChatGP
 # Setup
 
 1. First add the following lines at the top of your project where declare 'using":
-   * using System.Net.Http;
-   * using System.Net;
-   * using System.Text;
-   * using Newtonsoft.Json;
+
+```
+using System.Net.Http;
+using System.Net;
+using System.Text;
+using Newtonsoft.Json;
+```
+
 2. Declare your API key (insert your OpenAI API key in the quotes)
 
 ```
