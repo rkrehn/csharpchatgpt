@@ -18,7 +18,7 @@ using System.Text;
 using Newtonsoft.Json;
 ```
 
-2. Declare your API key (insert your OpenAI API key in the quotes)
+2. Declare your API key (insert your [OpenAI API key](https://platform.openai.com/account/api-keys) in the quotes)
 
 ```
 string apiKey = "[api key]";
