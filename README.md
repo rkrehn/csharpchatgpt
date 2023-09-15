@@ -39,9 +39,9 @@ client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apikey}");
 
 The following code creates the JSON request to OpenAI. You can review all the options you can include here: [https://platform.openai.com/docs/api-reference/chat/create](https://platform.openai.com/docs/api-reference/chat/create)0
 
-It's worth noting that only the "model" and the "messages" are required in the body. There are [many models](https://platform.openai.com/docs/models), but I'm using gpt-3.5-turbo in this example. Likewise, there are a few roles you can use such as system, user, assistance, or function. Typically, the system is the one role that defines what you want to accomplish. In our example, we'll tell ChatGPT that is acting as a travel agent (used on my [ReisPlan](https://www.reisplan.net) site).
+It's worth noting that only the "model" and the "messages" are required in the body. There are [many models](https://platform.openai.com/docs/models), but I'm using **gpt-3.5-turbo** in this example. Likewise, there are a few roles you can use such as system, user, assistance, or function. Typically, the **system** role defines what you want to accomplish. In our example, we'll tell ChatGPT **sytem** role that is acting as a travel agent (used on my [ReisPlan](https://www.reisplan.net) site).
 
-In the example below, I'm using max_tokens at 1024 to prevent a high cost. The gpt-3.5-turbo model can only support 4,096. I also use a [temperature](https://platform.openai.com/docs/guides/gpt/how-should-i-set-the-temperature-parameter) of 0.7, which gives a good sense of creativity, without being too consistent. Generally, temperature should be between 0.05 and 1, where 1 is very creative and 0.05 is very consistent.
+I'm using max_tokens at 1024 to prevent a high cost. The **gpt-3.5-turbo** model can only support 4,096 tokens. I also use a [temperature](https://platform.openai.com/docs/guides/gpt/how-should-i-set-the-temperature-parameter) of 0.7, which gives a good sense of creativity, without being too consistent. Generally, temperature should be between 0.05 and 1, where 1 is very creative and 0.05 is very consistent.
 
 ```
   var requestJson = new
@@ -65,7 +65,7 @@ In the example below, I'm using max_tokens at 1024 to prevent a high cost. The g
   };
 ```
 
-Next, build a **web content** using the serialized **requestJson** variable that we created above:
+Next, build a **HTTP content** using the serialized **requestJson** variable that we created above:
 
 ```
 StringContent content = new StringContent(JsonConvert.SerializeObject(requestJson), Encoding.UTF8, "application/json");
@@ -86,7 +86,42 @@ Then, we'll deserialize the response into a readable format.
 ```
 // Extract the completed text from the response
 dynamic responseObject = JsonConvert.DeserializeObject(responseJson);
+```
+
+You will receive a JSON response like this in the responseObject:
+
+```
+{
+  "id": "chatcmpl-123",
+  "object": "chat.completion",
+  "created": 1677652288,
+  "model": "gpt-3.5-turbo-0613",
+  "choices": [{
+    "index": 0,
+    "message": {
+      "role": "assistant",
+      "content": "\n\nSure, I can recommend you check out Livin the Dream brewery in Littleton and Denver Beer Co in Englewood.",
+    },
+    "finish_reason": "stop"
+  }],
+  "usage": {
+    "prompt_tokens": 9,
+    "completion_tokens": 12,
+    "total_tokens": 21
+  }
+}
+```
+
+* choices[0] is the first response
+* message is the node within the choices[0]
+* content is the response you're looking for
+
+The **completedText** string below is created from those three nodes above in the responseObject:
+
+```
 string completedText = responseObject.choices[0].message.content;
 ```
 
-The **completedText** string contains the response from ChatGPT.
+**completedText** will look like:
+
+> Sure, I can recommend you check out Livin the Dream brewery in Littleton and Denver Beer Co in Englewood.
