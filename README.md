@@ -37,7 +37,7 @@ client.DefaultRequestHeaders.Add("Authorization", $"Bearer {apikey}");
 
 # Setting up the request
 
-The following code creates the JSON request to OpenAI. You can review all the options you can include here: [https://platform.openai.com/docs/api-reference/chat/create](https://platform.openai.com/docs/api-reference/chat/create)0
+The following code creates the JSON request to OpenAI. You can review all the options you can include here: [https://platform.openai.com/docs/api-reference/chat/create](https://platform.openai.com/docs/api-reference/chat/create).
 
 It's worth noting that only the "model" and the "messages" are required in the body. There are [many models](https://platform.openai.com/docs/models), but I'm using **gpt-3.5-turbo** in this example. Likewise, there are a few roles you can use such as system, user, assistance, or function. Typically, the **system** role defines what you want to accomplish. In our example, we'll tell ChatGPT **sytem** role that is acting as a travel agent (used on my [ReisPlan](https://www.reisplan.net) site).
 
